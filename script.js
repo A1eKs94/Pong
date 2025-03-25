@@ -1,6 +1,10 @@
 let ball;
 let player1, player2;
-let p1Speed = 0, p2Speed = 0;
+let p1Speed = 0,
+  p2Speed = 0;
+let score1 = 0,
+  score2 = 0;
+let gameOver = false;
 
 function setup() {
   createCanvas(800, 400);
@@ -25,18 +29,24 @@ function draw() {
   // Dibujar marcador
   textSize(32);
   textAlign(CENTER, CENTER);
-  text("0", width / 4, 50);
-  text("0", (3 * width) / 4, 50);
+  text(score1, width / 4, 50);
+  text(score2, (3 * width) / 4, 50);
+
+  if (gameOver) {
+    textSize(50);
+    text("¡Game Over!", width / 2, height / 2);
+    return;
+  }
 
   // Dibujar jugadores
   fill(255);
   rect(player1.x, player1.y, player1.w, player1.h);
   rect(player2.x, player2.y, player2.w, player2.h);
-  
+
   // Mover jugadores
   player1.y += p1Speed;
   player2.y += p2Speed;
-  
+
   // Mantener los jugadores dentro del lienzo
   player1.y = constrain(player1.y, 0, height - player1.h);
   player2.y = constrain(player2.y, 0, height - player2.h);
@@ -69,6 +79,30 @@ function draw() {
     ball.y < player2.y + player2.h
   ) {
     ball.speedX *= -1; // Rebote correcto
+  }
+
+  if (ball.x < 0) {
+    score2++;
+    checkGameOver();
+    resetBall();
+  }
+  if (ball.x > width) {
+    score1++;
+    checkGameOver();
+    resetBall();
+  }
+}
+
+function resetBall() {
+  ball.x = width / 2;
+  ball.y = height / 2;
+  ball.speedX = random([-4, 4]);
+  ball.speedY = random([-3, 3]);
+}
+
+function checkGameOver() {
+  if (score1 >= 10 || score2 >= 10) {
+    gameOver = true;
   }
 }
 
